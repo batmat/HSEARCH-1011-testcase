@@ -11,7 +11,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<hsearch.version>4.0.0.Final</hsearch.version>
+		<hsearch.version>3.1.1.GA</hsearch.version>
 		<hannotations.version>3.4.0.GA</hannotations.version>
 	</properties>
 
@@ -28,14 +28,13 @@
 			<version>1.8.0.2</version>
 			<scope><!--test-->runtime</scope>
 		</dependency>
-		
-		<!-- HSearch for JBoss (v? EAP 6.x ?) -->
+		<!-- HSearch for JBoss EAP 5.1.x -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-search</artifactId>
 			<version>${hsearch.version}</version>
 		</dependency>
-		<!--<dependency>
+		<dependency>
 			<groupId>javassist</groupId>
 			<artifactId>javassist</artifactId>
 			<version>3.4.GA</version>
@@ -45,15 +44,14 @@
 			<artifactId>lucene-analyzers</artifactId>
 			<version>2.3.1</version>
 		</dependency>
-		-->
 
-		<!--<dependency>
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
 			<version>${hannotations.version}</version>
 			<scope>test</scope>
 		</dependency>
-		--><dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.9</version>

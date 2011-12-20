@@ -9,15 +9,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.util.Version;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.hibernate.search.query.dsl.QueryBuilder;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,11 +27,9 @@ import org.junit.Test;
  * Unit test for simple App.
  */
 public class HSearchCompositeIdWithHsqldbIssueTest {
-	private static final Version MYVERSION = Version.LUCENE_34;
-
 	@BeforeClass
 	public static void setup() {
-		Configuration cfg = new Configuration();
+		AnnotationConfiguration cfg = new AnnotationConfiguration();
 		cfg.setProperty("hibernate.connection.driver_class", "org.hsqldb.jdbcDriver");
 		cfg.setProperty("hibernate.connection.url", "jdbc:hsqldb:mem:aname");
 		cfg.setProperty("hibernate.connection.username", "sa");
@@ -40,11 +39,11 @@ public class HSearchCompositeIdWithHsqldbIssueTest {
 		cfg.setProperty("hibernate.current_session_context_class", "thread");
 		cfg.setProperty("hibernate.hbm2ddl.auto", "create-drop");
 
-		cfg.setProperty("hibernate.search.default.directory_provider", "ram");
-		cfg.setProperty("hibernate.search.lucene_version", MYVERSION.name());
+		cfg.setProperty("hibernate.search.default.directory_provider",
+				"org.hibernate.search.store.RAMDirectoryProvider");
 
 		cfg.addAnnotatedClass(MyIndexedEntity.class);
-		cfg.setProperty("hibernate.search.default.indexBase", "target");
+		// cfg.setProperty("hibernate.search.default.indexBase", "target");
 		sessionFactory = cfg.buildSessionFactory();
 	}
 
@@ -71,10 +70,9 @@ public class HSearchCompositeIdWithHsqldbIssueTest {
 
 		FullTextSession fullTextSession = Search.getFullTextSession(session);
 
-		QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(
-				MyIndexedEntity.class).get();
+		QueryParser queryParser = new MultiFieldQueryParser(new String[] { "someTitle" }, new StandardAnalyzer());
 
-		Query query = queryBuilder.keyword().onFields("someTitle").matching("temxt").createQuery();
+		Query query = queryParser.parse("temxt");
 
 		Transaction transaction = session.getTransaction();
 		transaction.begin();
